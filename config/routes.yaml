@@ -1,0 +1,14 @@
+#index:
+#    path: /
+#    defaults: { _controller: 'App\Controller\DefaultController::index' }
+calculator:
+    path: /calculator
+    defaults: { _controller: 'App\Controller\CalculatorController::index' }
+    # controller: App\Controller\CalculatorController::index
+    methods: [GET, POST]
+
+calculate:
+    path: /calculator/custom-calculate
+    defaults: { _controller: 'App\Controller\CalculatorController::customCalculate' }
+    # controller: App\Controller\CalculatorController::calculate
+    methods: [POST]

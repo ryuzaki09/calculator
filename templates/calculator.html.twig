@@ -1,0 +1,88 @@
+{% extends "base.html.twig" %}
+{% block title %} {{ title }} {% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="/css/style.css" />
+{% endblock %}
+
+{% block body %}
+    <h3>Basic Calculator</h3>
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
+
+        <div>
+            {{ form_widget(form.num1) }}
+            {{ form_widget(form.operator) }}
+            {{ form_widget(form.num2) }}
+            {{ form_widget(form.calculate) }}
+        </div>
+        {% if result %}
+            Total is: {{ result }}
+        {% endif %}
+    {{ form_end(form) }}
+    <h3>Custom Calculate</h3>
+    <form method="POST" action="{{ form_action2 }}">
+        <input type="text" name="custom_input" placeholder="e.g. 45+10-3" /> 
+        <button type="submit" name="calculate">Calculate</button>
+    </form>
+    {% for message in app.flashes('custom_result') %}
+        <div class="flash-notice">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(function() {
+            $('input[type=number]').on('keydown', function(e) {
+                var numValue = $(this).val();
+                //backspace and delete key
+                if (e.keyCode == 8 || e.keyCode == 46) {
+                    return true;
+                }
+
+                //non numeric keys
+                if (e.keyCode < 48 || e.keyCode > 57) {
+                    if (e.keyCode == 16 || e.keyCode == 9 || e.keyCode == 37 || e.keyCode == 39) {
+                        return true;
+                    }
+
+                    return false;
+                }
+            });
+
+            $('input[name=custom_input]').on('keydown', function(e) {
+                var numValue = $(this).val();
+                var prevChar = numValue.substr(-1);
+                //console.log(numValue.substr(-1));
+
+                //backspace and delete key
+                if (e.keyCode == 8 || e.keyCode == 46 || e.keyCode == 37 || e.keyCode == 39) {
+                    return true;
+                }
+
+                //non numeric keys
+                if (e.keyCode < 48 || e.keyCode > 57) {
+                    //operator keys
+                    if (e.keyCode == 16 || e.keyCode == 187 || e.keyCode == 189 || e.keyCode == 91 || e.keyCode == 191) {
+                        //operator has already been entered then prevent being entered again
+                        console.log(prevChar);
+                        if (prevChar == "\*" || prevChar == "+" || prevChar == "-" || prevChar == "/") {
+                            return false;
+                        }
+
+                        if (numValue == "") {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+            });
+        });
+
+    </script>
+
+{% endblock %}
